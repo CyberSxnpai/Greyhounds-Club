@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Greyhounds Club">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Greyhounds Club</title>
+<link rel="stylesheet" href="css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+
+  <!-- SPLASH SCREEN -->
+  <div id="splash" class="splash">
+    <div class="splash-logo">
+      <div class="splash-icon">🐺</div>
+      <div class="splash-title">GREYHOUNDS</div>
+      <div class="splash-sub">CLUB</div>
+    </div>
+  </div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="screen hidden">
+    <div class="login-bg"></div>
+    <div class="login-content">
+      <div class="login-logo">
+        <div class="login-icon">🐺</div>
+        <div class="login-title">GREYHOUNDS<br><span>CLUB</span></div>
+        <div class="login-tagline">Tvoje tetování. Tvůj příběh.</div>
+      </div>
+      <div class="login-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="tvuj@email.cz" autocomplete="email">
+        </div>
+        <div id="login-error" class="form-error hidden">Email nenalezen. Kontaktuj studio.</div>
+        <button class="btn-gold" id="login-btn" onclick="login()">Přihlásit se</button>
+        <div class="login-hint">Přihlašovací email = email který máš u nás v studiu</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="main-app" class="hidden">
+
+    <!-- PAGES -->
+    <div id="page-home" class="page">
+      <div class="home-header">
+        <div class="greeting" id="greeting">Vítej zpět</div>
+        <div class="username" id="username-display">...</div>
+      </div>
+
+      <div class="loyalty-card" id="loyalty-card">
+        <div class="card-top">
+          <div class="card-logo">Greyhounds<span>Atelier Club</span></div>
+          <div class="card-tier" id="card-tier">Bronze</div>
+        </div>
+        <div class="points-display">
+          <div class="points-label">Tvoje body</div>
+          <div class="points-value"><span id="card-points">0</span> <small>pts</small></div>
+        </div>
+        <div class="card-progress">
+          <div class="progress-info">
+            <span id="tier-label">Bronze tier</span>
+            <span id="tier-next">750 bodů do Silver</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+        <div class="card-bottom">
+          <div class="card-artist">Tvůj umělec<strong id="card-artist">—</strong></div>
+          <div class="card-id" id="card-id">#GH-000</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num gold" id="stat-navstevy">0</div><div class="stat-label">Návštěvy</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-tetovani">0</div><div class="stat-label">Tetování</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-doporuceni">0</div><div class="stat-label">Doporučení</div></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span>Hojení</span><a onclick="showPage('healing')">Zobrazit vše →</a></div>
+        <div id="home-healing-list"><div class="loading-small">Načítám...</div></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span>Odměny</span><a onclick="showPage('rewards')">Všechny →</a></div>
+        <div class="rewards-scroll" id="home-rewards-list"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span>Ze studia</span><a onclick="showPage('events')">Vše →</a></div>
+        <div id="home-events-list"></div>
+      </div>
+
+      <div class="pb"></div>
+    </div>
+
+    <!-- HEALING PAGE -->
+    <div id="page-healing" class="page hidden">
+      <div class="page-header">
+        <div class="page-title">Healing Journey</div>
+        <div class="page-sub">Sleduj hojení a dostávej rady od umělce</div>
+      </div>
+      <div id="healing-list" class="section"><div class="loading-small">Načítám...</div></div>
+      <div class="pb"></div>
+    </div>
+
+    <!-- GALLERY PAGE -->
+    <div id="page-gallery" class="page hidden">
+      <div class="page-header">
+        <div class="page-title">Moje Galerie</div>
+        <div class="page-sub">Všechna tvoje díla od Greyhounds</div>
+      </div>
+      <div id="gallery-list" class="section"><div class="loading-small">Načítám...</div></div>
+      <div class="pb"></div>
+    </div>
+
+    <!-- EVENTS PAGE -->
+    <div id="page-events" class="page hidden">
+      <div class="page-header">
+        <div class="page-title">Akce & Novinky</div>
+        <div class="page-sub">Co se chystá v Greyhounds Atelier</div>
+      </div>
+      <div class="filter-tabs" id="event-filters">
+        <div class="ftab active" onclick="filterEvents('vse', this)">Vše</div>
+        <div class="ftab" onclick="filterEvents('Flash Day', this)">Flash Day</div>
+        <div class="ftab" onclick="filterEvents('Akce', this)">Akce</div>
+        <div class="ftab" onclick="filterEvents('Novinka', this)">Novinky</div>
+      </div>
+      <div id="events-list" class="section"></div>
+      <div class="pb"></div>
+    </div>
+
+    <!-- REWARDS PAGE -->
+    <div id="page-rewards" class="page hidden">
+      <div class="page-header">
+        <div class="page-title">Greyhounds Points</div>
+        <div class="page-sub">Sbírej body, odemykej odměny</div>
+      </div>
+      <div class="points-hero">
+        <div class="hero-pts" id="hero-points">0</div>
+        <div class="hero-label">Tvoje body</div>
+        <div class="hero-next" id="hero-next">Načítám...</div>
+      </div>
+      <div class="section"><div class="section-title"><span>Odměny</span></div></div>
+      <div class="rewards-grid" id="rewards-grid"></div>
+      <div class="section" style="margin-top:24px;"><div class="section-title"><span>Jak získat body</span></div></div>
+      <div class="earn-list">
+        <div class="earn-item"><div class="earn-icon">📅</div><div class="earn-info"><div class="earn-name">Návštěva studia</div><div class="earn-desc">Za každou službu</div></div><div class="earn-pts">+100</div></div>
+        <div class="earn-item"><div class="earn-icon">✅</div><div class="earn-info"><div class="earn-name">Dorazíš na termín</div><div class="earn-desc">Bez zrušení v poslední chvíli</div></div><div class="earn-pts">+50</div></div>
+        <div class="earn-item"><div class="earn-icon">📸</div><div class="earn-info"><div class="earn-name">Fotka hojení</div><div class="earn-desc">Každý den sledování</div></div><div class="earn-pts">+10</div></div>
+        <div class="earn-item"><div class="earn-icon">👥</div><div class="earn-info"><div class="earn-name">Doporučení přítele</div><div class="earn-desc">Když přijde díky tobě</div></div><div class="earn-pts">+200</div></div>
+        <div class="earn-item"><div class="earn-icon">🎂</div><div class="earn-info"><div class="earn-name">Výročí tetování</div><div class="earn-desc">Každý rok od zákroku</div></div><div class="earn-pts">+30</div></div>
+      </div>
+      <div class="pb"></div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="nav">
+      <div class="nav-item active" id="nav-home" onclick="showPage('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Domů
+      </div>
+      <div class="nav-item" id="nav-healing" onclick="showPage('healing')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        Hojení
+      </div>
+      <div class="nav-item" id="nav-gallery" onclick="showPage('gallery')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Galerie
+      </div>
+      <div class="nav-item" id="nav-events" onclick="showPage('events')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Akce
+      </div>
+      <div class="nav-item" id="nav-rewards" onclick="showPage('rewards')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        Body
+      </div>
+    </nav>
+
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/sheets.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
