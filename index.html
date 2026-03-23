@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greyhounds Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --card: #181818;
+    --card2: #1e1e1e;
+    --border: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --gold-dim: rgba(201,168,76,0.15);
+    --white: #f0ece4;
+    --muted: #6b6b6b;
+    --green: #4caf7d;
+    --red: #e05c5c;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+background: #0d0d0d;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+font-family: ‘DM Sans’, sans-serif;
+padding: 20px;
+}
+
+.phone {
+width: 390px;
+height: 844px;
+background: var(–black);
+border-radius: 50px;
+border: 1.5px solid #2a2a2a;
+overflow: hidden;
+position: relative;
+box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px #1a1a1a, inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.notch {
+position: absolute;
+top: 0; left: 50%; transform: translateX(-50%);
+width: 126px; height: 34px;
+background: var(–black);
+border-radius: 0 0 20px 20px;
+z-index: 100;
+}
+
+.screen {
+width: 100%;
+height: 100%;
+overflow: hidden;
+position: relative;
+}
+
+/* PAGES */
+.page {
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 100%;
+overflow-y: auto;
+transition: opacity 0.35s ease, transform 0.35s ease;
+scrollbar-width: none;
+}
+.page::-webkit-scrollbar { display: none; }
+.page.hidden { opacity: 0; pointer-events: none; transform: translateX(30px); }
+
+/* BOTTOM NAV */
+.nav {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 80px;
+background: rgba(10,10,10,0.97);
+border-top: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: space-around;
+padding: 0 10px 16px;
+z-index: 50;
+backdrop-filter: blur(20px);
+}
+
+.nav-item {
+display: flex; flex-direction: column; align-items: center; gap: 4px;
+cursor: pointer; padding: 8px 16px; border-radius: 12px;
+transition: all 0.2s;
+color: var(–muted);
+font-size: 10px; font-weight: 500; letter-spacing: 0.5px;
+text-transform: uppercase;
+}
+.nav-item.active { color: var(–gold); }
+.nav-item svg { width: 22px; height: 22px; }
+
+/* ===== HOME PAGE ===== */
+.home-header {
+padding: 60px 24px 24px;
+background: linear-gradient(180deg, #111 0%, #0a0a0a 100%);
+position: relative;
+overflow: hidden;
+}
+.home-header::before {
+content: ‘’;
+position: absolute;
+top: -60px; right: -60px;
+width: 200px; height: 200px;
+background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+pointer-events: none;
+}
+
+.greeting {
+font-size: 12px; color: var(–muted); letter-spacing: 2px; text-transform: uppercase;
+margin-bottom: 4px;
+}
+.username {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 36px; color: var(–white); line-height: 1;
+letter-spacing: 1px;
+}
+.username span { color: var(–gold); }
+
+/* Loyalty card */
+.loyalty-card {
+margin: 20px 24px;
+background: linear-gradient(135deg, #1a1610 0%, #2a2010 50%, #1a1610 100%);
+border: 1px solid var(–gold);
+border-radius: 20px;
+padding: 22px;
+position: relative;
+overflow: hidden;
+}
+.loyalty-card::before {
+content: ‘’;
+position: absolute;
+top: -40px; right: -40px;
+width: 150px; height: 150px;
+background: radial-gradient(circle, rgba(201,168,76,0.2) 0%, transparent 70%);
+}
+.loyalty-card::after {
+content: ‘GREYHOUNDS’;
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 80px;
+color: rgba(201,168,76,0.04);
+position: absolute;
+bottom: -15px; right: -10px;
+letter-spacing: 3px;
+pointer-events: none;
+}
+
+.card-top {
+display: flex; justify-content: space-between; align-items: flex-start;
+margin-bottom: 18px;
+}
+.card-logo {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 18px; color: var(–gold); letter-spacing: 2px;
+}
+.card-logo span { font-size: 11px; color: var(–muted); display: block; letter-spacing: 1px; font-family: ‘DM Sans’, sans-serif; }
+.card-tier {
+background: var(–gold); color: var(–black);
+font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+padding: 4px 10px; border-radius: 20px;
+}
+
+.points-display {
+margin-bottom: 16px;
+}
+.points-label { font-size: 10px; color: var(–muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+.points-value {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 52px; color: var(–gold); line-height: 1;
+letter-spacing: 2px;
+}
+.points-value span { font-size: 18px; color: var(–muted); margin-left: 4px; font-family: ‘DM Sans’, sans-serif; font-weight: 300; }
+
+.card-progress {
+margin-bottom: 12px;
+}
+.progress-info { display: flex; justify-content: space-between; font-size: 11px; color: var(–muted); margin-bottom: 6px; }
+.progress-bar {
+height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden;
+}
+.progress-fill {
+height: 100%; width: 68%;
+background: linear-gradient(90deg, var(–gold), var(–gold-light));
+border-radius: 2px;
+position: relative;
+}
+.progress-fill::after {
+content: ‘’;
+position: absolute; right: 0; top: -2px;
+width: 8px; height: 8px; border-radius: 50%;
+background: var(–gold-light);
+box-shadow: 0 0 6px var(–gold);
+}
+
+.card-bottom { display: flex; justify-content: space-between; align-items: center; }
+.card-artist { font-size: 11px; color: var(–muted); }
+.card-artist strong { color: var(–white); display: block; font-size: 13px; }
+.card-id { font-size: 10px; color: rgba(201,168,76,0.4); letter-spacing: 1px; font-family: monospace; }
+
+/* Quick stats */
+.stats-row {
+display: flex; gap: 10px; padding: 0 24px; margin-bottom: 24px;
+}
+.stat-box {
+flex: 1; background: var(–card); border: 1px solid var(–border);
+border-radius: 14px; padding: 14px 12px; text-align: center;
+}
+.stat-num { font-family: ‘Bebas Neue’, sans-serif; font-size: 26px; color: var(–white); line-height: 1; }
+.stat-num.gold { color: var(–gold); }
+.stat-label { font-size: 10px; color: var(–muted); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
+
+/* Section */
+.section { padding: 0 24px; margin-bottom: 24px; }
+.section-title {
+font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+color: var(–muted); margin-bottom: 14px;
+display: flex; justify-content: space-between; align-items: center;
+}
+.section-title a { color: var(–gold); cursor: pointer; font-size: 11px; }
+
+/* Healing tracker */
+.healing-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px; overflow: hidden;
+margin-bottom: 10px;
+}
+.healing-header {
+padding: 14px 16px;
+display: flex; align-items: center; gap: 12px;
+}
+.healing-thumb {
+width: 44px; height: 44px; border-radius: 10px;
+background: linear-gradient(135deg, #2a2010, #3a3020);
+display: flex; align-items: center; justify-content: center;
+font-size: 20px; flex-shrink: 0;
+border: 1px solid var(–gold-dim);
+}
+.healing-info { flex: 1; }
+.healing-name { font-size: 14px; color: var(–white); font-weight: 500; }
+.healing-sub { font-size: 11px; color: var(–muted); margin-top: 2px; }
+.healing-badge {
+font-size: 10px; padding: 3px 8px; border-radius: 6px;
+font-weight: 600; letter-spacing: 0.5px;
+}
+.badge-healing { background: rgba(76,175,125,0.15); color: var(–green); }
+.badge-done { background: rgba(201,168,76,0.15); color: var(–gold); }
+
+.healing-days {
+padding: 0 16px 14px;
+display: flex; gap: 6px;
+}
+.day-dot {
+width: 28px; height: 28px; border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-size: 10px; font-weight: 600;
+cursor: pointer;
+}
+.day-done { background: var(–green); color: #fff; }
+.day-today { background: var(–gold); color: var(–black); }
+.day-future { background: var(–border); color: var(–muted); }
+
+/* Rewards */
+.rewards-scroll {
+display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px;
+scrollbar-width: none;
+}
+.rewards-scroll::-webkit-scrollbar { display: none; }
+
+.reward-card {
+flex-shrink: 0; width: 130px;
+background: var(–card); border: 1px solid var(–border);
+border-radius: 16px; padding: 16px 14px;
+cursor: pointer; transition: all 0.2s;
+}
+.reward-card.unlocked { border-color: var(–gold); background: linear-gradient(135deg, #1a1610, #201a0a); }
+.reward-icon { font-size: 26px; margin-bottom: 10px; }
+.reward-name { font-size: 12px; color: var(–white); font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
+.reward-pts { font-size: 11px; color: var(–muted); }
+.reward-pts.gold { color: var(–gold); font-weight: 600; }
+.reward-locked { font-size: 16px; margin-bottom: 6px; }
+
+/* Feed items */
+.feed-item {
+background: var(–card); border: 1px solid var(–border);
+border-radius: 14px; padding: 14px 16px;
+margin-bottom: 10px;
+display: flex; gap: 12px; align-items: flex-start;
+}
+.feed-avatar {
+width: 38px; height: 38px; border-radius: 50%;
+background: linear-gradient(135deg, var(–gold-dim), #2a2a2a);
+display: flex; align-items: center; justify-content: center;
+font-size: 16px; flex-shrink: 0;
+border: 1px solid var(–gold-dim);
+}
+.feed-content { flex: 1; }
+.feed-title { font-size: 13px; color: var(–white); font-weight: 500; margin-bottom: 3px; }
+.feed-sub { font-size: 11px; color: var(–muted); line-height: 1.4; }
+.feed-time { font-size: 10px; color: var(–muted); margin-top: 6px; }
+.feed-tag {
+font-size: 9px; padding: 2px 7px; border-radius: 5px;
+font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+display: inline-block; margin-bottom: 4px;
+}
+.tag-flash { background: rgba(224,92,92,0.15); color: var(–red); }
+.tag-tip { background: rgba(201,168,76,0.15); color: var(–gold); }
+.tag-news { background: rgba(76,175,125,0.15); color: var(–green); }
+
+.pb { padding-bottom: 90px; }
+
+/* ===== HEALING PAGE ===== */
+.page-header {
+padding: 60px 24px 20px;
+background: var(–dark);
+}
+.page-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 32px; color: var(–white); letter-spacing: 1px;
+}
+.page-sub { font-size: 13px; color: var(–muted); margin-top: 4px; }
+
+.upload-zone {
+margin: 0 24px 20px;
+border: 1.5px dashed var(–gold-dim);
+border-radius: 16px;
+padding: 28px;
+text-align: center;
+background: rgba(201,168,76,0.03);
+cursor: pointer;
+}
+.upload-icon { font-size: 32px; margin-bottom: 8px; }
+.upload-text { font-size: 13px; color: var(–muted); }
+.upload-text strong { color: var(–gold); display: block; font-size: 14px; margin-bottom: 4px; }
+
+.healing-timeline { padding: 0 24px; }
+.timeline-day {
+display: flex; gap: 14px; margin-bottom: 16px;
+}
+.timeline-left { display: flex; flex-direction: column; align-items: center; }
+.timeline-dot {
+width: 32px; height: 32px; border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+.tdot-done { background: var(–green); color: #fff; }
+.tdot-today { background: var(–gold); color: var(–black); }
+.timeline-line { width: 2px; flex: 1; background: var(–border); margin: 4px 0; min-height: 20px; }
+.timeline-content {
+flex: 1; background: var(–card); border: 1px solid var(–border);
+border-radius: 12px; padding: 12px 14px; margin-bottom: 0;
+}
+.timeline-content.today-card { border-color: var(–gold); background: linear-gradient(135deg, #1a1610, #181818); }
+.tl-title { font-size: 13px; color: var(–white); font-weight: 500; }
+.tl-sub { font-size: 11px; color: var(–muted); margin-top: 2px; }
+.tl-note {
+font-size: 11px; color: var(–white); margin-top: 8px;
+padding: 8px; background: rgba(255,255,255,0.04); border-radius: 8px;
+font-style: italic;
+}
+.tl-action {
+margin-top: 10px; padding: 8px 14px;
+background: var(–gold); color: var(–black);
+border-radius: 8px; font-size: 12px; font-weight: 700;
+display: inline-block; cursor: pointer; border: none;
+letter-spacing: 0.5px;
+}
+
+.comment-box {
+margin: 0 24px 20px;
+background: var(–card); border: 1px solid var(–gold-dim);
+border-radius: 14px; padding: 14px 16px;
+}
+.comment-from { font-size: 11px; color: var(–gold); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 6px; }
+.comment-text { font-size: 13px; color: var(–white); line-height: 1.5; }
+.comment-time { font-size: 10px; color: var(–muted); margin-top: 6px; }
+
+/* ===== REWARDS PAGE ===== */
+.points-hero {
+margin: 0 24px 20px;
+background: linear-gradient(135deg, #1a1610, #2a2010);
+border: 1px solid var(–gold);
+border-radius: 20px; padding: 24px;
+text-align: center;
+position: relative; overflow: hidden;
+}
+.points-hero::before {
+content: ‘’;
+position: absolute; inset: 0;
+background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.15), transparent 60%);
+}
+.hero-pts { font-family: ‘Bebas Neue’, sans-serif; font-size: 72px; color: var(–gold); line-height: 1; letter-spacing: 2px; }
+.hero-label { font-size: 11px; color: var(–muted); text-transform: uppercase; letter-spacing: 2px; }
+.hero-next { font-size: 12px; color: var(–muted); margin-top: 8px; }
+.hero-next strong { color: var(–white); }
+
+.rewards-grid { padding: 0 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rg-card {
+background: var(–card); border: 1px solid var(–border);
+border-radius: 16px; padding: 18px 14px;
+cursor: pointer; transition: all 0.2s;
+position: relative; overflow: hidden;
+}
+.rg-card.unlocked { border-color: var(–gold); }
+.rg-card.unlocked::before {
+content: ‘’;
+position: absolute; inset: 0;
+background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent);
+}
+.rg-icon { font-size: 30px; margin-bottom: 10px; }
+.rg-name { font-size: 13px; color: var(–white); font-weight: 500; margin-bottom: 6px; line-height: 1.3; }
+.rg-req { font-size: 11px; color: var(–muted); }
+.rg-req.unlocked-text { color: var(–gold); font-weight: 600; }
+.rg-lock { position: absolute; top: 12px; right: 12px; font-size: 14px; opacity: 0.3; }
+
+/* How to earn */
+.earn-list { padding: 0 24px; }
+.earn-item {
+display: flex; align-items: center; gap: 14px;
+padding: 14px 0; border-bottom: 1px solid var(–border);
+}
+.earn-item:last-child { border-bottom: none; }
+.earn-icon {
+width: 40px; height: 40px; border-radius: 12px;
+background: var(–gold-dim); display: flex; align-items: center;
+justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.earn-info { flex: 1; }
+.earn-name { font-size: 13px; color: var(–white); font-weight: 500; }
+.earn-desc { font-size: 11px; color: var(–muted); margin-top: 2px; }
+.earn-pts { font-family: ‘Bebas Neue’, sans-serif; font-size: 22px; color: var(–gold); }
+
+/* ===== PROFILE PAGE ===== */
+.profile-hero {
+padding: 60px 24px 24px;
+text-align: center;
+background: var(–dark);
+}
+.profile-avatar {
+width: 80px; height: 80px; border-radius: 50%;
+background: linear-gradient(135deg, #2a2010, #3a3020);
+margin: 0 auto 12px;
+display: flex; align-items: center; justify-content: center;
+font-size: 36px;
+border: 2px solid var(–gold);
+box-shadow: 0 0 20px rgba(201,168,76,0.2);
+}
+.profile-name { font-family: ‘Bebas Neue’, sans-serif; font-size: 28px; color: var(–white); letter-spacing: 1px; }
+.profile-since { font-size: 12px; color: var(–muted); margin-top: 2px; }
+.profile-tier {
+display: inline-flex; align-items: center; gap: 6px;
+background: var(–gold); color: var(–black);
+font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+padding: 5px 14px; border-radius: 20px; margin-top: 10px;
+}
+
+.my-collection { padding: 0 24px; margin-bottom: 10px; }
+.collection-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.collection-item {
+aspect-ratio: 1; border-radius: 12px;
+background: var(–card); border: 1px solid var(–border);
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+gap: 4px; cursor: pointer;
+position: relative; overflow: hidden;
+}
+.collection-item.has-image {
+background: linear-gradient(135deg, #1a1610, #2a2015);
+border-color: var(–gold-dim);
+}
+.ci-emoji { font-size: 28px; }
+.ci-label { font-size: 9px; color: var(–muted); text-align: center; padding: 0 4px; line-height: 1.2; }
+.ci-add { font-size: 24px; color: var(–border); }
+
+.profile-menu { padding: 0 24px; }
+.menu-item {
+display: flex; align-items: center; gap: 14px;
+padding: 16px 0; border-bottom: 1px solid var(–border);
+cursor: pointer;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-icon {
+width: 36px; height: 36px; border-radius: 10px;
+background: var(–card); display: flex; align-items: center;
+justify-content: center; font-size: 16px;
+border: 1px solid var(–border);
+}
+.menu-label { flex: 1; font-size: 14px; color: var(–white); }
+.menu-arrow { color: var(–muted); font-size: 16px; }
+
+/* ===== GALLERY ===== */
+.timeline-scroll { display: flex; gap: 20px; padding: 4px 0; }
+.tl-strip-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.tls-dot { width: 10px; height: 10px; border-radius: 50%; background: var(–border); }
+.gold-dot { background: var(–gold); box-shadow: 0 0 8px var(–gold); }
+.tls-label { font-size: 13px; color: var(–muted); font-weight: 500; }
+.tl-strip-item.active .tls-label { color: var(–white); }
+.year-label { font-family: ‘Bebas Neue’, sans-serif; font-size: 22px; color: var(–gold); letter-spacing: 2px; }
+.gallery-entry { margin: 0 24px 16px; background: var(–card); border: 1px solid var(–border); border-radius: 16px; overflow: hidden; }
+.ge-header { padding: 14px 16px 10px; display: flex; align-items: center; gap: 10px; }
+.ge-dot { width: 8px; height: 8px; border-radius: 50%; background: var(–border); flex-shrink: 0; }
+.gold-dot-sm { background: var(–gold); box-shadow: 0 0 6px var(–gold); }
+.ge-info { flex: 1; }
+.ge-title { font-size: 14px; color: var(–white); font-weight: 500; }
+.ge-meta { font-size: 11px; color: var(–muted); margin-top: 2px; }
+.ge-photos { display: flex; gap: 8px; padding: 0 16px 14px; overflow-x: auto; scrollbar-width: none; }
+.ge-photos::-webkit-scrollbar { display: none; }
+.ge-photo { width: 80px; height: 80px; border-radius: 10px; flex-shrink: 0; background: var(–card2); border: 1px solid var(–border); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.emoji-photo { font-size: 32px; }
+.add-photo { font-size: 24px; color: var(–border); border-style: dashed; }
+.ge-note { padding: 10px 16px 14px; font-size: 12px; color: var(–muted); font-style: italic; border-top: 1px solid var(–border); line-height: 1.4; }
+
+/* ===== EVENTS ===== */
+.event-hero { margin: 0 24px 20px; background: linear-gradient(135deg, #1a0f0f, #2a1a0a); border: 1px solid var(–red); border-radius: 20px; padding: 22px; position: relative; overflow: hidden; }
+.event-hero::before { content: ‘’; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(224,92,92,0.15), transparent 70%); }
+.event-hero-tag { font-size: 10px; color: var(–red); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.event-hero-title { font-family: ‘Bebas Neue’, sans-serif; font-size: 40px; color: var(–white); line-height: 1; letter-spacing: 2px; margin-bottom: 4px; }
+.event-hero-date { font-size: 12px; color: var(–muted); margin-bottom: 10px; }
+.event-hero-desc { font-size: 13px; color: var(–white); line-height: 1.5; margin-bottom: 14px; opacity: 0.85; }
+.event-hero-artists { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.ea-chip { font-size: 11px; background: rgba(255,255,255,0.08); color: var(–white); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+.event-btn { background: var(–red); color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; font-family: ‘DM Sans’, sans-serif; }
+.filter-tabs { display: flex; gap: 8px; padding: 0 24px; margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+.filter-tabs::-webkit-scrollbar { display: none; }
+.ftab { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; background: var(–card); border: 1px solid var(–border); color: var(–muted); cursor: pointer; }
+.ftab.active { background: var(–gold); color: var(–black); border-color: var(–gold); font-weight: 700; }
+.event-card { display: flex; gap: 14px; margin-bottom: 14px; background: var(–card); border: 1px solid var(–border); border-radius: 14px; padding: 14px 16px; }
+.event-date-box { display: flex; flex-direction: column; align-items: center; background: var(–card2); border-radius: 10px; padding: 8px 10px; min-width: 44px; border: 1px solid var(–border); }
+.edb-day { font-family: ‘Bebas Neue’, sans-serif; font-size: 24px; color: var(–white); line-height: 1; }
+.edb-month { font-size: 9px; color: var(–muted); letter-spacing: 1px; text-transform: uppercase; }
+.event-card-right { flex: 1; }
+.ev-tag { display: inline-block; margin-bottom: 4px; }
+.ev-title { font-size: 13px; color: var(–white); font-weight: 500; margin-bottom: 4px; }
+.ev-desc { font-size: 12px; color: var(–muted); line-height: 1.4; margin-bottom: 6px; }
+.ev-meta { font-size: 11px; color: var(–muted); }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.page:not(.hidden) > * { animation: fadeIn 0.4s ease forwards; }
+</style>
+
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+```
+<!-- ===== HOME PAGE ===== -->
+<div class="page" id="page-home">
+  <div class="home-header">
+    <div class="greeting">Vítej zpět</div>
+    <div class="username">Tereza <span>K.</span></div>
+  </div>
+
+  <div class="loyalty-card">
+    <div class="card-top">
+      <div class="card-logo">
+        Greyhounds
+        <span>Atelier Club</span>
+      </div>
+      <div class="card-tier">✦ Silver</div>
+    </div>
+    <div class="points-display">
+      <div class="points-label">Tvoje body</div>
+      <div class="points-value">680 <span>pts</span></div>
+    </div>
+    <div class="card-progress">
+      <div class="progress-info">
+        <span>Silver tier</span>
+        <span>320 bodů do Gold</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+    <div class="card-bottom">
+      <div class="card-artist">
+        Tvůj umělec
+        <strong>Marek G.</strong>
+      </div>
+      <div class="card-id">#GH-04821</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-num gold">4</div>
+      <div class="stat-label">Návštěvy</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Tetování</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">1</div>
+      <div class="stat-label">Doporučení</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span>Hojení</span>
+      <a onclick="showPage('healing')">Zobrazit vše →</a>
+    </div>
+    <div class="healing-card">
+      <div class="healing-header">
+        <div class="healing-thumb">🐍</div>
+        <div class="healing-info">
+          <div class="healing-name">Had na předloktí</div>
+          <div class="healing-sub">Marek G. · 15. 3. 2026</div>
+        </div>
+        <div class="healing-badge badge-healing">Hojí se</div>
+      </div>
+      <div class="healing-days">
+        <div class="day-dot day-done">1</div>
+        <div class="day-dot day-done">2</div>
+        <div class="day-dot day-done">3</div>
+        <div class="day-dot day-done">4</div>
+        <div class="day-dot day-done">5</div>
+        <div class="day-dot day-today">6</div>
+        <div class="day-dot day-future">7</div>
+        <div class="day-dot day-future">14</div>
+      </div>
+    </div>
+    <div class="healing-card">
+      <div class="healing-header">
+        <div class="healing-thumb">🌿</div>
+        <div class="healing-info">
+          <div class="healing-name">Botanika na rameni</div>
+          <div class="healing-sub">Marek G. · 12. 1. 2026</div>
+        </div>
+        <div class="healing-badge badge-done">Zahojeno ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span>Odměny</span>
+      <a onclick="showPage('rewards')">Všechny →</a>
+    </div>
+    <div class="rewards-scroll">
+      <div class="reward-card unlocked" onclick="showPage('rewards')">
+        <div class="reward-icon">☕</div>
+        <div class="reward-name">Káva zdarma</div>
+        <div class="reward-pts gold">✓ Odemčeno</div>
+      </div>
+      <div class="reward-card" onclick="showPage('rewards')">
+        <div class="reward-icon">🧴</div>
+        <div class="reward-name">Péčový set</div>
+        <div class="reward-pts">750 pts</div>
+      </div>
+      <div class="reward-card" onclick="showPage('rewards')">
+        <div class="reward-icon">💉</div>
+        <div class="reward-name">Dotetch zdarma</div>
+        <div class="reward-pts">1000 pts</div>
+      </div>
+      <div class="reward-card" onclick="showPage('rewards')">
+        <div class="reward-icon">🎨</div>
+        <div class="reward-name">Sleva 20% na tet.</div>
+        <div class="reward-pts">1500 pts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span>Ze studia</span></div>
+    <div class="feed-item">
+      <div class="feed-avatar">⚡</div>
+      <div class="feed-content">
+        <div class="feed-tag tag-flash">Flash Day</div>
+        <div class="feed-title">Flash Day — 28. března</div>
+        <div class="feed-sub">Volná místa u Marka. Motivy od 500 Kč. Rezervuj rychle!</div>
+        <div class="feed-time">před 2 hodinami</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-avatar">💡</div>
+      <div class="feed-content">
+        <div class="feed-tag tag-tip">Tip péče</div>
+        <div class="feed-title">Jak pečovat o čerstvé tet.</div>
+        <div class="feed-sub">Nezapomeň mazat 2× denně a vyhýbat se přímému slunci první 2 týdny.</div>
+        <div class="feed-time">včera</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pb"></div>
+</div>
+
+<!-- ===== HEALING PAGE ===== -->
+<div class="page hidden" id="page-healing">
+  <div class="page-header">
+    <div class="page-title">Healing Journey</div>
+    <div class="page-sub">Sleduj hojení a dostávej rady od umělce</div>
+  </div>
+
+  <div class="comment-box" style="margin-top:0; margin-bottom:16px; margin-left:24px; margin-right:24px;">
+    <div class="comment-from">💬 Marek G. — tvůj umělec</div>
+    <div class="comment-text">Terčo, den 5 vypadá skvěle! Pokračuj v mazání a vyhni se vodě. Zítra přidej fotku — chci vidět jak to vypadá 👌</div>
+    <div class="comment-time">dnes, 14:22</div>
+  </div>
+
+  <div class="upload-zone">
+    <div class="upload-icon">📸</div>
+    <div class="upload-text">
+      <strong>Nahraj dnešní fotku — Den 6</strong>
+      Získáš +10 bodů za každý den sledování
+    </div>
+  </div>
+
+  <div class="healing-timeline">
+    <div class="section-title" style="padding:0; margin-bottom:16px;">
+      <span>Had na předloktí · 15. 3.</span>
+    </div>
+
+    <div class="timeline-day">
+      <div class="timeline-left">
+        <div class="timeline-dot tdot-done">1</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-content">
+        <div class="tl-title">Den 1 — Čerstvé tet.</div>
+        <div class="tl-sub">Fotka nahrána · +10 pts</div>
+        <div class="tl-note">"Trochu červené ale normální" — Marek G.: Perfektní, přesně tak má vypadat ✓</div>
+      </div>
+    </div>
+
+    <div class="timeline-day">
+      <div class="timeline-left">
+        <div class="timeline-dot tdot-done">3</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-content">
+        <div class="tl-title">Den 3 — Začíná se loupat</div>
+        <div class="tl-sub">Fotka nahrána · +10 pts</div>
+        <div class="tl-note">Marek G.: "Loupání je normální! Nešklub. Mazej dál 😊"</div>
+      </div>
+    </div>
+
+    <div class="timeline-day">
+      <div class="timeline-left">
+        <div class="timeline-dot tdot-today">6</div>
+      </div>
+      <div class="timeline-content today-card">
+        <div class="tl-title">Den 6 — Dnes</div>
+        <div class="tl-sub">Čeká na tvoji fotku</div>
+        <button class="tl-action">📸 Přidat fotku dne</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pb"></div>
+</div>
+
+<!-- ===== REWARDS PAGE ===== -->
+<div class="page hidden" id="page-rewards">
+  <div class="page-header">
+    <div class="page-title">Greyhounds Points</div>
+    <div class="page-sub">Sbírej body, odemykej odměny</div>
+  </div>
+
+  <div class="points-hero">
+    <div class="hero-pts">680</div>
+    <div class="hero-label">Tvoje body</div>
+    <div class="hero-next">Ještě <strong>70 bodů</strong> do dalšího odemčení</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span>Odměny</span></div>
+  </div>
+
+  <div class="rewards-grid">
+    <div class="rg-card unlocked">
+      <div class="rg-icon">☕</div>
+      <div class="rg-name">Káva nebo čaj zdarma</div>
+      <div class="rg-req unlocked-text">✓ Odemčeno</div>
+    </div>
+    <div class="rg-card">
+      <div class="rg-lock">🔒</div>
+      <div class="rg-icon">🧴</div>
+      <div class="rg-name">Péčový set na tet.</div>
+      <div class="rg-req">750 pts · chybí 70</div>
+    </div>
+    <div class="rg-card">
+      <div class="rg-lock">🔒</div>
+      <div class="rg-icon">💉</div>
+      <div class="rg-name">Dotetch zdarma</div>
+      <div class="rg-req">1 000 pts</div>
+    </div>
+    <div class="rg-card">
+      <div class="rg-lock">🔒</div>
+      <div class="rg-icon">🎨</div>
+      <div class="rg-name">Sleva 20% na tet.</div>
+      <div class="rg-req">1 500 pts</div>
+    </div>
+    <div class="rg-card">
+      <div class="rg-lock">🔒</div>
+      <div class="rg-icon">⭐</div>
+      <div class="rg-name">Prioritní rezervace</div>
+      <div class="rg-req">2 000 pts</div>
+    </div>
+    <div class="rg-card">
+      <div class="rg-lock">🔒</div>
+      <div class="rg-icon">🖋️</div>
+      <div class="rg-name">Vlastní design tet.</div>
+      <div class="rg-req">3 000 pts</div>
+    </div>
+  </div>
+
+  <div class="section" style="margin-top:24px;">
+    <div class="section-title"><span>Jak získat body</span></div>
+  </div>
+  <div class="earn-list">
+    <div class="earn-item">
+      <div class="earn-icon">📅</div>
+      <div class="earn-info">
+        <div class="earn-name">Návštěva studia</div>
+        <div class="earn-desc">Za každou službu</div>
+      </div>
+      <div class="earn-pts">+100</div>
+    </div>
+    <div class="earn-item">
+      <div class="earn-icon">✅</div>
+      <div class="earn-info">
+        <div class="earn-name">Dorazíš na termín</div>
+        <div class="earn-desc">Bez zrušení v poslední chvíli</div>
+      </div>
+      <div class="earn-pts">+50</div>
+    </div>
+    <div class="earn-item">
+      <div class="earn-icon">📸</div>
+      <div class="earn-info">
+        <div class="earn-name">Fotka hojení</div>
+        <div class="earn-desc">Každý den sledování</div>
+      </div>
+      <div class="earn-pts">+10</div>
+    </div>
+    <div class="earn-item">
+      <div class="earn-icon">👥</div>
+      <div class="earn-info">
+        <div class="earn-name">Doporučení přítele</div>
+        <div class="earn-desc">Když přijde díky tobě</div>
+      </div>
+      <div class="earn-pts">+200</div>
+    </div>
+    <div class="earn-item">
+      <div class="earn-icon">🎂</div>
+      <div class="earn-info">
+        <div class="earn-name">Výročí tetování</div>
+        <div class="earn-desc">Každý rok od zákroku</div>
+      </div>
+      <div class="earn-pts">+30</div>
+    </div>
+  </div>
+
+  <div class="pb"></div>
+</div>
+
+<!-- ===== GALLERY PAGE ===== -->
+<div class="page hidden" id="page-gallery">
+  <div class="page-header">
+    <div class="page-title">Moje Galerie</div>
+    <div class="page-sub">Všechna tvoje díla od Greyhounds</div>
+  </div>
+
+  <!-- Timeline strip -->
+  <div class="section" style="margin-bottom:10px;">
+    <div class="section-title"><span>Moje cesta</span></div>
+    <div class="timeline-scroll">
+      <div class="tl-strip-item active">
+        <div class="tls-dot gold-dot"></div>
+        <div class="tls-label">2026</div>
+      </div>
+      <div class="tl-strip-item">
+        <div class="tls-dot"></div>
+        <div class="tls-label">2025</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2026 entries -->
+  <div class="section" style="margin-bottom:6px;">
+    <div class="year-label">2026</div>
+  </div>
+
+  <div class="gallery-entry">
+    <div class="ge-header">
+      <div class="ge-dot gold-dot-sm"></div>
+      <div class="ge-info">
+        <div class="ge-title">Had na předloktí</div>
+        <div class="ge-meta">15. března · Marek G. · Tetování</div>
+      </div>
+      <div class="ge-badge badge-healing">Hojí se</div>
+    </div>
+    <div class="ge-photos">
+      <div class="ge-photo emoji-photo">🐍</div>
+      <div class="ge-photo emoji-photo">📸</div>
+      <div class="ge-photo add-photo">＋</div>
+    </div>
+    <div class="ge-note">Marek G.: "Krásný had, Terčo! Zahojí se perfektně 🔥"</div>
+  </div>
+
+  <!-- 2025 entries -->
+  <div class="section" style="margin-bottom:6px; margin-top:8px;">
+    <div class="year-label">2025</div>
+  </div>
+
+  <div class="gallery-entry">
+    <div class="ge-header">
+      <div class="ge-dot"></div>
+      <div class="ge-info">
+        <div class="ge-title">Botanika na rameni</div>
+        <div class="ge-meta">12. ledna · Marek G. · Tetování</div>
+      </div>
+      <div class="ge-badge badge-done">Zahojeno ✓</div>
+    </div>
+    <div class="ge-photos">
+      <div class="ge-photo emoji-photo">🌿</div>
+      <div class="ge-photo emoji-photo">🌱</div>
+      <div class="ge-photo emoji-photo">✨</div>
+    </div>
+    <div class="ge-note">Zahojeno za 3 týdny. Výsledek: 🤩</div>
+  </div>
+
+  <div class="gallery-entry">
+    <div class="ge-header">
+      <div class="ge-dot"></div>
+      <div class="ge-info">
+        <div class="ge-title">Piercing helix</div>
+        <div class="ge-meta">5. dubna · Jana K. · Piercing</div>
+      </div>
+      <div class="ge-badge badge-done">Zahojeno ✓</div>
+    </div>
+    <div class="ge-photos">
+      <div class="ge-photo emoji-photo">💎</div>
+      <div class="ge-photo add-photo">＋</div>
+    </div>
+  </div>
+
+  <div class="pb"></div>
+</div>
+
+<!-- ===== EVENTS PAGE ===== -->
+<div class="page hidden" id="page-events">
+  <div class="page-header">
+    <div class="page-title">Akce & Novinky</div>
+    <div class="page-sub">Co se chystá v Greyhounds Atelier</div>
+  </div>
+
+  <!-- Upcoming highlight -->
+  <div class="event-hero">
+    <div class="event-hero-tag">⚡ Brzy</div>
+    <div class="event-hero-title">Flash Day</div>
+    <div class="event-hero-date">28. března 2026 · od 10:00</div>
+    <div class="event-hero-desc">Předpřipravené motivy od Marka a Jany. Ceny od 500 Kč. Míst je málo — rezervuj hned!</div>
+    <div class="event-hero-artists">
+      <div class="ea-chip">🎨 Marek G.</div>
+      <div class="ea-chip">✏️ Jana K.</div>
+    </div>
+    <button class="event-btn">Rezervovat termín</button>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="filter-tabs">
+    <div class="ftab active">Vše</div>
+    <div class="ftab">Akce</div>
+    <div class="ftab">Novinky</div>
+    <div class="ftab">Tipy</div>
+  </div>
+
+  <!-- Event list -->
+  <div class="section">
+    <div class="event-card">
+      <div class="event-card-left">
+        <div class="event-date-box">
+          <span class="edb-day">28</span>
+          <span class="edb-month">BŘE</span>
+        </div>
+      </div>
+      <div class="event-card-right">
+        <div class="ev-tag tag-flash">Flash Day</div>
+        <div class="ev-title">Flash Day s Markem & Janou</div>
+        <div class="ev-desc">Motivy od 500 Kč, bez zálohy. Přijď a vyber si!</div>
+        <div class="ev-meta">📍 Greyhounds Atelier · 8 míst zbývá</div>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-card-left">
+        <div class="event-date-box">
+          <span class="edb-day">5</span>
+          <span class="edb-month">DUB</span>
+        </div>
+      </div>
+      <div class="event-card-right">
+        <div class="ev-tag tag-news">Novinka</div>
+        <div class="ev-title">Nový umělec v týmu!</div>
+        <div class="ev-desc">Od dubna rozšiřujeme tým. Představíme brzy 👀</div>
+        <div class="ev-meta">📢 Studio update</div>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-card-left">
+        <div class="event-date-box">
+          <span class="edb-day">15</span>
+          <span class="edb-month">DUB</span>
+        </div>
+      </div>
+      <div class="event-card-right">
+        <div class="ev-tag tag-tip">Akce</div>
+        <div class="ev-title">Velikonoční sleva 15%</div>
+        <div class="ev-desc">Na všechny piercingy a beauty zákroky přes celý duben.</div>
+        <div class="ev-meta">🏷️ Pouze pro členy klubu</div>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-card-left">
+        <div class="event-date-box">
+          <span class="edb-day">10</span>
+          <span class="edb-month">KVĚ</span>
+        </div>
+      </div>
+      <div class="event-card-right">
+        <div class="ev-tag tag-flash">Guest Artist</div>
+        <div class="ev-title">Guest Artist Week</div>
+        <div class="ev-desc">Hostující umělec z Berlína. Rezervace otevřeny od 1. dubna.</div>
+        <div class="ev-meta">📍 Greyhounds Atelier · Omezená kapacita</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pb"></div>
+</div>
+
+<!-- ===== PROFILE PAGE ===== -->
+<div class="page hidden" id="page-profile">
+  <div class="profile-hero">
+    <div class="profile-avatar">🐺</div>
+    <div class="profile-name">Tereza Kovářová</div>
+    <div class="profile-since">Klientka od ledna 2025</div>
+    <div class="profile-tier">✦ Silver Member</div>
+  </div>
+
+  <div class="my-collection section" style="padding:0 24px; margin-bottom:0;">
+    <div class="section-title" style="margin-top:20px;"><span>Moje kolekce</span></div>
+    <div class="collection-grid">
+      <div class="collection-item has-image">
+        <div class="ci-emoji">🐍</div>
+        <div class="ci-label">Had na předloktí</div>
+      </div>
+      <div class="collection-item has-image">
+        <div class="ci-emoji">🌿</div>
+        <div class="ci-label">Botanika na rameni</div>
+      </div>
+      <div class="collection-item">
+        <div class="ci-add">＋</div>
+        <div class="ci-label">Přidat zákrok</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-menu section" style="padding:0 24px; margin-top:20px;">
+    <div class="section-title"><span>Účet</span></div>
+    <div class="menu-item">
+      <div class="menu-icon">🎨</div>
+      <div class="menu-label">Můj umělec — Marek G.</div>
+      <div class="menu-arrow">›</div>
+    </div>
+    <div class="menu-item">
+      <div class="menu-icon">📅</div>
+      <div class="menu-label">Moje rezervace</div>
+      <div class="menu-arrow">›</div>
+    </div>
+    <div class="menu-item">
+      <div class="menu-icon">👥</div>
+      <div class="menu-label">Doporučit přítele</div>
+      <div class="menu-arrow">›</div>
+    </div>
+    <div class="menu-item">
+      <div class="menu-icon">🔔</div>
+      <div class="menu-label">Notifikace</div>
+      <div class="menu-arrow">›</div>
+    </div>
+    <div class="menu-item">
+      <div class="menu-icon">⚙️</div>
+      <div class="menu-label">Nastavení</div>
+      <div class="menu-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="pb"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="nav">
+  <div class="nav-item active" id="nav-home" onclick="showPage('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    Domů
+  </div>
+  <div class="nav-item" id="nav-healing" onclick="showPage('healing')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+    </svg>
+    Hojení
+  </div>
+  <div class="nav-item" id="nav-gallery" onclick="showPage('gallery')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+    </svg>
+    Galerie
+  </div>
+  <div class="nav-item" id="nav-events" onclick="showPage('events')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+    Akce
+  </div>
+  <div class="nav-item" id="nav-rewards" onclick="showPage('rewards')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+    </svg>
+    Body
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<script>
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.remove('hidden');
+  document.getElementById('nav-' + name).classList.add('active');
+  document.getElementById('page-' + name).scrollTop = 0;
+}
+</script>
+
+</body>
+</html>
